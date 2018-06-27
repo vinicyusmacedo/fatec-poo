@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -65,10 +67,30 @@ public class AlunoView extends JFrame implements ActionListener {
 		painelCampos.add(txtNome);
 		painelCampos.add(new JLabel("Nascimento: "));
 		painelCampos.add(txtNascimento);
+		
+		painelBotoes.add(btnAdicionar);
+		painelBotoes.add(btnPesquisar);
+		painelBotoes.add(btnAtualizar);
+		painelBotoes.add(btnRemover);
 	}
 	
 	public void setLayout() {
+		painel = new JPanel();
+		painelCampos = new JPanel();
+		painelBotoes = new JPanel();
+		
+		painel.setLayout(new BorderLayout());
+		painelCampos.setLayout(new GridLayout(3, 2));
+		painelBotoes.setLayout(new GridLayout(1, 4));
+		
+		painel.add(painelCampos, BorderLayout.CENTER);
+		painel.add(painelBotoes, BorderLayout.SOUTH);
+		
 		this.setContentPane(painel);
+		this.setSize(360, 144);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
 	}
 	
 	public void alunoToView(Aluno a) {
@@ -79,19 +101,18 @@ public class AlunoView extends JFrame implements ActionListener {
 		);
 	}
 	
-	public Aluno viewToAluno() throws EmptyRAException {
-		Aluno a = new Aluno();
-		if (txtRa.getText().isEmpty()) {
-			throw new EmptyRAException(); 
-		} 
-		a.setRa(txtRa.getText());
-		a.setNome(txtNome.getText());
+	public Aluno viewToAluno() {
+		Aluno a = null;
 		try {
-			a.setNascimento(
+			a = new Aluno(
+				txtRa.getText(),
+				txtNome.getText(),
 				dateFormat.parse(txtNascimento.getText())
 			);
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} catch (EmptyRAException e) {
+			JOptionPane.showMessageDialog(null, "Insira o RA");
 		}
 		return a;
 	}
@@ -101,30 +122,24 @@ public class AlunoView extends JFrame implements ActionListener {
 		String cmd = e.getActionCommand();
 		Aluno a;
 		
-		try {
-			switch(cmd) {
-			case addString:
-				a = viewToAluno();
-				alunoCtrl.adicionar(a);
-				break;
-			case pesqString:
-				a = viewToAluno();
-				a = alunoCtrl.pesquisar(a.getRa());
-				alunoToView(a);
-				break;
-			case remString:
-				a = viewToAluno();
-				alunoCtrl.remover(a.getRa());
-				break;
-			case attString:
-				a = viewToAluno();
-				alunoCtrl.atualizar(a);
-				break;
-			}
-		} catch (EmptyRAException e1) {
-			JOptionPane.showMessageDialog(
-				null, "Insira o RA."
-			);
+		switch(cmd) {
+		case addString:
+			a = viewToAluno();
+			alunoCtrl.adicionar(a);
+			break;
+		case pesqString:
+			a = viewToAluno();
+			a = alunoCtrl.pesquisar(a.getRa());
+			alunoToView(a);
+			break;
+		case remString:
+			a = viewToAluno();
+			alunoCtrl.remover(a.getRa());
+			break;
+		case attString:
+			a = viewToAluno();
+			alunoCtrl.atualizar(a);
+			break;
 		}
 	}
 	

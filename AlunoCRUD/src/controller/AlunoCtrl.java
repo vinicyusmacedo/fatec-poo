@@ -1,6 +1,9 @@
 package controller;
 
 import java.util.List;
+
+import javax.swing.JOptionPane;
+
 import java.util.ArrayList;
 
 import dao.AlunoDAO;
@@ -16,23 +19,33 @@ public class AlunoCtrl {
 
 	public void adicionar(Aluno a) {
 		alunoDao.adicionarAluno(a);
+		JOptionPane.showMessageDialog(
+			null, "Aluno adicionado"
+		);
 	}
 	
 	public Aluno pesquisar(String ra) {
-		List<Aluno> alunoList = alunoDao.listarAlunos();
-		for (Aluno a : alunoList) {
-			if (a.getRa().equals(ra)) {
+		for (Aluno a : alunoDao.pesquisarAluno(ra)) {
+			if (a.getRa().equals(ra))
 				return a;
-			}
 		}
-		return new Aluno();
+		JOptionPane.showMessageDialog(
+			null, "Aluno não encontrado com esse RA"
+		);
+		return null;
 	}
 	
 	public void remover(String ra) {
-		alunoDao.removeAluno(ra);
+		alunoDao.removerAluno(ra);
+		JOptionPane.showMessageDialog(
+			null, "Aluno removido"
+		);
 	}
 	
 	public void atualizar(Aluno a) {
 		alunoDao.atualizarAluno(a);
+		JOptionPane.showMessageDialog(
+			null, "Aluno atualizado"
+		);
 	}
 }
